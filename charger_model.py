@@ -10,27 +10,27 @@ class Charger():
 
         self.V_Set = 0
         self.I_Set = 0
-        self.switch = False
+        self.power_on = False
         self.mode = self.MODES["OFF"] 
         self.V = 0
         self.I = 0
         self.P = self.V * self.I
 
-    def set_switch(self):
+    def start_charger(self):
         self.I = self.I_Set
         self.V = self.V_Set
-        self.switch = True
+        self.power_on = True
 
     def determine_charger_mode(self, V_load, R_load):
         """
         Set the system in OFF< CC, or CV mode depending on the conditions. 
         """
         
-        if (not self.switch) or (not self.check_system_safe(V_load, R_load)):
+        if (not self.power_on) or (not self.check_system_safe(V_load, R_load)):
             self.mode =  self.MODES["OFF"]        
-        elif self.I <= self.I_Set:
+        elif self.I < self.I_Set:
             self.mode = self.MODES["CV"]
-        elif self.V <= self.V_Set:
+        elif self.V < self.V_Set:
             self.mode = self.MODES["CC"]
         else:
             print("Your CC/CV math is messed up.")
@@ -64,12 +64,12 @@ class Charger():
     
     def update_output(self, V_load, R_load):
 
-        self.switch = self.check_system_safe(V_load, R_load)
+        self.power_on = self.check_system_safe(V_load, R_load)
 
         V_drop = self.V - V_load
-        self.I = min(self.I_Set, V_drop / R_load)
         self.V = min(self.V_Set, self.I * R_load + V_load)
-        print(f"CHRG | V: {self.V:.2f} V | I: {self.I:.2f} A")
+        self.I = min(self.I_Set, V_drop / R_load)
 
         self.determine_charger_mode(V_load, R_load)
         print(f"System state: {self.mode}")
+        print(f"CHRG | V: {self.V:.2f} V | I: {self.I:.2f} A")

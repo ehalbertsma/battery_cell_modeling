@@ -10,14 +10,14 @@ data = data[cell_name]
 cell = cell_model.Cell(data)
 charger = charger_model.Charger()
 
-charger.V_Set = 3.4
-charger.I_Set = 18
-charger.set_switch()
+charger.V_Set = 3.5
+charger.I_Set = 5
+charger.start_charger()
 
-while charger.switch:
+while charger.power_on:
     charger.update_output(cell.V, cell.R0)
     cell.charge_cell(charger.I, 1)
-    time.sleep(0.1)
+    time.sleep(1)
 
 
 

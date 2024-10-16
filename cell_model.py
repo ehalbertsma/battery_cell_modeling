@@ -38,7 +38,7 @@ class Cell():
 
         charge_energy = I * t / 3600 # [A*h]
         self.Q += charge_energy
-        Q_string = f"{self.Q:.1f}"
+        Q_string = f"{self.Q:.2f}"
         self.V = self.charge_curve[Q_string]
 
         print(f"CELL | V: {self.V:.2f} V | Q: {self.Q:.3f} A*h")
