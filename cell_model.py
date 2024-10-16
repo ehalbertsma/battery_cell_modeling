@@ -16,9 +16,14 @@ class Cell():
 
         # Configured values        
         self.V = 2.5   # [V]
-        self.Q = 0 # [C]
+        self.Q = 0.01 # [C]
         self.soc = 0 # [%]
         self.soc_confidence = False
+
+    def __voltage_lookup__(self):
+        Q_trunc = round(self.Q, 2)
+        Q_index = self.charge_curve["energy"].index(Q_trunc)
+        return self.charge_curve["voltage"][Q_index]
 
     def determine_soc(self):
 
@@ -37,9 +42,8 @@ class Cell():
         """
 
         charge_energy = I * t / 3600 # [A*h]
-        self.Q += charge_energy
-        Q_string = f"{self.Q:.2f}"
-        self.V = self.charge_curve[Q_string]
+        self.Q = self.Q + charge_energy
+        self.V = self.__voltage_lookup__()
 
         print(f"CELL | V: {self.V:.2f} V | Q: {self.Q:.3f} A*h")
 
